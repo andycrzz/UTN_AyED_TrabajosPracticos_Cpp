@@ -68,14 +68,85 @@ int largoCadena(char cadena[]) {
 
 //Función 7 - pasajeDiaACadena
 
+void pasajeDiaACadena(int fecha, char destino[])
+    {
+    char meses[12][11] =
+        {
+            "enero",
+            "febrero",
+            "marzo",
+            "abril",
+            "mayo",
+            "junio",
+            "julio",
+            "agosto",
+            "septiembre",
+            "octubre",
+            "noviembre",
+            "diciembre",
+        };
 
+    // Separamos la fecha AAAAMMDD.
+    int anio = fecha / 10000;
+    int mes = (fecha / 100) % 100;
+    int dia = fecha % 100;
+    int i= 0;
+
+    // dia "de"
+    if (dia >= 10)
+        {
+            destino[i++] = dia / 10 + '0';
+        }
+    destino[i++] = dia % 10 + '0';
+    
+    destino[i++] = ' ';
+    destino[i++] = 'd';
+    destino[i++] = 'e';
+    destino[i++] = ' ';
+
+    // mes "de" (se usa mes-1 porque el 4 en el arreglo en realidad es el mes 5, por ej.)
+    int j = 0;
+
+    while (meses[mes - 1][j] != '\0')
+        {
+            destino[i++] = meses[mes - 1][j++];
+        }
+    destino[i++] = ' ';
+    destino[i++] = 'd';
+    destino[i++] = 'e';
+    destino[i++] = ' ';
+//año
+    destino[i++] = anio / 1000 + '0';
+    destino[i++] = (anio / 100) % 10 + '0';
+    destino[i++] = (anio / 10) % 10 + '0';
+    destino[i++] = anio % 10 + '0';
+    destino[i++] = '\0';
+}
 
 //Función 8 - pasajeSegundosACadena
-
-
-
-
-
+void pasajeSegundosACadena(float segundos, char destino[]) 
+    {
+    //calculo de horas, es el numero dividido por 3600, Despues a la variable segundos se le restan las horas multiplicadas por 3600 para obtener los minutos y segundos.
+    int horas = segundos / 3600;    
+    segundos = segundos - horas * 3600;
+    //calculo de minutos, es el numero dividido por 60, Despues a la variable segundos se le restan los min multiplicados por 60 para obtener los segundos y decimas de segundo.
+    int minutos = segundos / 60;    
+    segundos = segundos - minutos * 60;
+    // el int "borra" los decimales tenés los segundos en segentero y decimasD.S. en decimas que al multiplicar x 10 te deja solo el prim digito
+    int segEntero = segundos;
+    int decimas = (segundos - segEntero) * 10;
+    //todas las posiciones del vector se "llenan" con estas lineas de codigo.
+    destino[0] = horas / 10 + '0';
+    destino[1] = horas % 10 + '0';
+    destino[2] = ':';
+    destino[3] = minutos / 10 + '0';
+    destino[4] = minutos % 10 + '0';
+    destino[5] = ':';
+    destino[6] = segEntero / 10 + '0';
+    destino[7] = segEntero % 10 + '0';
+    destino[8] = '.';
+    destino[9] = decimas + '0';
+    destino[10] = '\0';
 
 
 int main() {
@@ -143,12 +214,16 @@ int main() {
 
     //Prueba Función 7 - pasajeDiaACadena
     cout << "Prueba Función 7 - pasajeDiaACadena" << endl;
-
+    char cadena[50];
+    pasajeDiaACadena(20260406, cadena);
+    cout << cadena << endl;
     cout << "------------------------------------" << endl;
 
     //Prueba Función 8 - pasajeSegundosACadena
     cout << "Prueba Función 8 - pasajeSegundosACadena" << endl;
-    
+    char cadena[11];
+    pasajeSegundosACadena(45106.97, cadena);
+    cout << cadena << endl;
     cout << "------------------------------------" << endl;
 
     return 0;
