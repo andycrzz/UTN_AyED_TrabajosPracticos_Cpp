@@ -1,6 +1,37 @@
 #include <iostream>
 using namespace std;
 
+void concatenarCadenas(char[], char[]);
+void concatenarCadenasTruncado(char[], int, char[]);
+int compararCadenas(char[], char[]);
+int largoCadena(char[]);
+void pasajeDiaACadena(int, char[]);
+void pasajeSegundosACadena(float, char[]);
+
+void printFn1();
+void printFn2();
+void printFn3();
+void printFn4();
+void printFn5();
+void printFn6();
+void printFn7();
+void printFn8();
+
+int main() {
+    cout << "--- PRUEBAS DEL TRABAJO PRÁCTICO ---" << endl << endl;
+
+    printFn1();
+    printFn2();
+    printFn3();
+    printFn4();
+    printFn5();
+    printFn6();
+    printFn7();
+    printFn8();
+
+    return 0;
+}
+
 //Función 1 - concatenarCadenas
 void concatenarCadenas(char destino[], char origen[]) {
     int lenDest = largoCadena(destino);
@@ -68,8 +99,7 @@ int largoCadena(char cadena[]) {
 
 //Función 7 - pasajeDiaACadena
 
-void pasajeDiaACadena(int fecha, char destino[])
-    {
+void pasajeDiaACadena(int fecha, char destino[]) {
     char meses[12][11] =
         {
             "enero",
@@ -124,8 +154,7 @@ void pasajeDiaACadena(int fecha, char destino[])
 }
 
 //Función 8 - pasajeSegundosACadena
-void pasajeSegundosACadena(float segundos, char destino[]) 
-    {
+void pasajeSegundosACadena(float segundos, char destino[]) {
     //calculo de horas, es el numero dividido por 3600, Despues a la variable segundos se le restan las horas multiplicadas por 3600 para obtener los minutos y segundos.
     int horas = segundos / 3600;    
     segundos = segundos - horas * 3600;
@@ -147,44 +176,59 @@ void pasajeSegundosACadena(float segundos, char destino[])
     destino[8] = '.';
     destino[9] = decimas + '0';
     destino[10] = '\0';
+}
 
+void nextFn() {
+    cout << "\nPresione cualquier tecla para seguir...\n";
+    cin.get();
+}
 
-int main() {
-    cout << "--- PRUEBAS DEL TRABAJO PRÁCTICO ---" << endl << endl;
-
-    //Prueba Función 1 - concatenarCadenas
+//Prueba Función 1 - concatenarCadenas
+void printFn1() {
     cout << "Prueba Función 1 - concatenarCadenas" << endl;
     const int size = 10;
-    char cadena1[20] = "Hola ";
-    char cadena1C[size] = "Hola ";
-    char cadena2[] = "Mundo";
+    char cadenaDestino[20] = "Hola ";
+    char cadenaDestino2[size] = "Hola ";
+    char cadenaOrigen[] = "Mundo";
 
-    concatenarCadenas(cadena1, cadena2);
-    concatenarCadenasTruncado(cadena1C, size, cadena2); // Para poder saber cuando truncar, se requiere pasar el espacio alojado en la cadena de destino
+    cout << "Primera cadena: " << cadenaDestino << endl;
+    cout << "Segunda cadena: " << cadenaOrigen << endl;
+
+    concatenarCadenas(cadenaDestino, cadenaOrigen);
+    concatenarCadenasTruncado(cadenaDestino, size, cadenaOrigen); // Para poder saber cuando truncar, se requiere pasar el espacio alojado en la cadena de destino
     
-    cout << cadena1 << endl;
-    cout << cadena1C << endl;
-    cout << "------------------------------------" << endl;
+    cout << "Concatenado: " << cadenaDestino << endl;
 
-    //Prueba Función 2 - compararCadenas
+    nextFn();
+    cout << "------------------------------------" << endl;
+}
+
+//Prueba Función 2 - compararCadenas
+void printFn2() {
     cout << "Prueba Función 2 - compararCadenas" << endl;
-    char cadena1[20];
-    char cadena2[20];
+    char cadena1[20] = {};
+    char cadena2[20] = {};
     cout << "Ingrese la primera cadena: ";
     cin.getline(cadena1, 20);
     cout << "Ingrese la segunda cadena: ";
     cin.getline(cadena2, 20);
+    
     int resultado = compararCadenas(cadena1, cadena2);
+    
     if (resultado == 0) {
-        cout << "0" << endl; // Las cadenas son iguales
+        cout << "0 - Cadenas iguales" << endl; // Las cadenas son iguales
     } else if (resultado < 0) {
         cout << "Es menor" << endl; // La primera cadena es menor
     } else {
         cout << "Es mayor" << endl; // La primera cadena es mayor
     }
+    
+    nextFn();
     cout << "------------------------------------" << endl;
+}
 
-    //Prueba Función 3 - copiarCadenas
+//Prueba Función 3 - copiarCadenas
+void printFn3() {
     cout << "Prueba Función 3 - copiarCadenas" << endl;
     char cadenaDestino[30] = "Uruguay tiene 4 mundiales";
     char cadenaOrigen[30] = "Uruguay tiene 2 mundiales";
@@ -193,38 +237,60 @@ int main() {
     cout << "Cadena 2: " << cadenaOrigen << endl;
     copiarCadenas(cadenaDestino, cadenaOrigen); 
     cout << "Cadena 1 copiada: " << cadenaDestino << endl;
+    
+    nextFn();
     cout << "------------------------------------" << endl;
+}
 
-    //Prueba Función 4 - largoCadena
+//Prueba Función 4 - largoCadena
+void printFn4() {
     cout << "Prueba Función 4 - largoCadena" << endl;
     char cadena[20] = "Hola Mundo";
     int largo = largoCadena(cadena);
+    cout << "Cadena: " << cadena << endl;
     cout << "Largo de la cadena: " << largo << endl;
-    cout << "------------------------------------" << endl;
     
-    //Prueba Función 5 - contarLetrasEnCadena
+    nextFn();
+    cout << "------------------------------------" << endl;
+}
+
+//Prueba Función 5 - contarLetrasEnCadena
+void printFn5() {
     cout << "Prueba Función 5 - contarLetrasEnCadena" << endl;
+    cout << "No implementada";
     
+    nextFn();
     cout << "------------------------------------" << endl;
-    
-    //Prueba Función 6 - contarPalabrasEnCadena
+}
+
+//Prueba Función 6 - contarPalabrasEnCadena
+void printFn6() {
     cout << "Prueba Función 6 - contarPalabrasEnCadena" << endl;
-
+    cout << "No implementada";
+    
+    nextFn();
     cout << "------------------------------------" << endl;
+}
 
+void printFn7() {
     //Prueba Función 7 - pasajeDiaACadena
     cout << "Prueba Función 7 - pasajeDiaACadena" << endl;
     char cadena[50];
     pasajeDiaACadena(20260406, cadena);
-    cout << cadena << endl;
+    cout << "20260406" << " => " << cadena << endl;
+    
+    nextFn();
     cout << "------------------------------------" << endl;
+}
 
+void printFn8() {
     //Prueba Función 8 - pasajeSegundosACadena
     cout << "Prueba Función 8 - pasajeSegundosACadena" << endl;
     char cadena[11];
     pasajeSegundosACadena(45106.97, cadena);
-    cout << cadena << endl;
+    cout << "45106.97" << " => " << cadena << endl;
+    
+    nextFn();
     cout << "------------------------------------" << endl;
-
-    return 0;
 }
+
