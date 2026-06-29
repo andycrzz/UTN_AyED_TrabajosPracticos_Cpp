@@ -91,10 +91,38 @@ int largoCadena(char cadena[]) {
 
 //Función 5 - contarLetrasEnCadena
 
-
-
+//DEBE CONTARSE CARACTERES ASCII, PERO NO SIMBOLOS O EL SPACE
+int contarLetrasEnCadena(char[]);
+//Aca poner la cantidad de letras contadas
+int contarLetrasEnCadena(char cadena[]){
+int contador=0;
+int i=0;
+ //48 122 ascii
+ while(cadena[i]!='\0'){
+     if(cadena[i]>=48 && cadena[i]<=57 ||cadena[i]>=65 && cadena[i]<=90 || cadena[i]>= 97 && cadena[i]<=122 ){
+     contador++;
+     }
+     i++;
+    }
+    return contador;
+}
 //Función 6 - contarPalabrasEnCadena
-
+int contarPalabrasEnCadena(char cadena1[]) {
+    int contador = 0;
+    int i = 0;
+    while (cadena[i] != '\0') {
+        // CONDICIÓN 1: Si encontramos un carácter que NO es un espacio...
+        if (cadena[i] != ' ') {
+            if (comenzoPalabra == false) {
+                contador++;     
+                comenzoPalabra = true;  
+            }} 
+        else {
+            comenzoPalabra = false;
+        }
+        i++;
+    }  return contador;
+}
 
 
 //Función 7 - pasajeDiaACadena
@@ -257,8 +285,8 @@ void printFn4() {
 //Prueba Función 5 - contarLetrasEnCadena
 void printFn5() {
     cout << "Prueba Función 5 - contarLetrasEnCadena" << endl;
-    cout << "No implementada";
-    
+    char cadena1[]=("Hola Mundo 2026!");
+    cout<<"La cantidad de letras en cadena es:"<< contarLetrasEnCadena(cadena1)<<endl;
     nextFn();
     cout << "------------------------------------" << endl;
 }
@@ -266,8 +294,9 @@ void printFn5() {
 //Prueba Función 6 - contarPalabrasEnCadena
 void printFn6() {
     cout << "Prueba Función 6 - contarPalabrasEnCadena" << endl;
-    cout << "No implementada";
-    
+    char cadena1[] = "Hola Mundo 2026!";
+    cout << "La cantidad de palabras en la cadena es: " << contarPalabrasEnCadena(cadena1) << endl;
+       
     nextFn();
     cout << "------------------------------------" << endl;
 }
