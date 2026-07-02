@@ -5,6 +5,8 @@ void concatenarCadenas(char[], char[]);
 void concatenarCadenasTruncado(char[], int, char[]);
 int compararCadenas(char[], char[]);
 int largoCadena(char[]);
+int contarLetrasEnCadena(char[]);
+int contarPalabrasEnCadena(char[]);
 void pasajeDiaACadena(int, char[]);
 void pasajeSegundosACadena(float, char[]);
 
@@ -32,29 +34,33 @@ int main() {
     return 0;
 }
 
-//Función 1 - concatenarCadenas
+// Función 1 - concatenarCadenas
 void concatenarCadenas(char destino[], char origen[]) {
     int lenDest = largoCadena(destino);
+    int i = 0;
 
-    for (int i = lenDest; i < lenDest + largoCadena(origen); i++) {
-        destino[i] = origen[i - lenDest];
+    while (origen[i] != '\0') {
+        destino[lenDest + i] = origen[i];
+        i++;
     }
+
+    destino[lenDest + i] = '\0';
 }
 
 void concatenarCadenasTruncado(char destino[], int destBuf, char origen[]) {
     int lenDest = largoCadena(destino);
-    int realLen = lenDest;
+    int i = 0;
 
-    for (int i = lenDest; i < destBuf; i++) {
-        destino[i] = origen[i - lenDest];
-        realLen++;
+    while (origen[i] != '\0' && lenDest + i < destBuf - 1) {
+        destino[lenDest + i] = origen[i];
+        i++;
     }
 
-    destino[realLen] = '\0'; // Nos aseguramos de insertar el null character
+    destino[lenDest + i] = '\0'; // Nos aseguramos de insertar el null character
 }
 
 
-//Función 2 - compararCadenas
+// Función 2 - compararCadenas
 int compararCadenas(char cadena1[], char cadena2[]) {
     int i = 0;
     while (cadena1[i] != '\0' && cadena2[i] != '\0') {
@@ -79,7 +85,7 @@ void copiarCadenas(char destino[], char origen[]) {
 }
 
 
-//Función 4 - largoCadena
+// Función 4 - largoCadena
 int largoCadena(char cadena[]) {
     int c = 0;
     while (cadena[c] != '\0') {
@@ -88,12 +94,7 @@ int largoCadena(char cadena[]) {
     return c;
 }
 
-
-//Función 5 - contarLetrasEnCadena
-
-//DEBE CONTARSE CARACTERES ASCII, PERO NO SIMBOLOS O EL SPACE
-int contarLetrasEnCadena(char[]);
-//Aca poner la cantidad de letras contadas
+// Función 5 - contarLetrasEnCadena
 int contarLetrasEnCadena(char cadena[]){
 int contador=0;
 int i=0;
@@ -106,27 +107,29 @@ int i=0;
     }
     return contador;
 }
-//Función 6 - contarPalabrasEnCadena
-int contarPalabrasEnCadena(char cadena1[]) {
+
+// Función 6 - contarPalabrasEnCadena
+int contarPalabrasEnCadena(char cadena[]) {
     int contador = 0;
+    bool comienzoPalabra = false;
     int i = 0;
+
     while (cadena[i] != '\0') {
         // CONDICIÓN 1: Si encontramos un carácter que NO es un espacio...
         if (cadena[i] != ' ') {
-            if (comenzoPalabra == false) {
+            if (comienzoPalabra == false) {
                 contador++;     
-                comenzoPalabra = true;  
+                comienzoPalabra = true;  
             }} 
         else {
-            comenzoPalabra = false;
+            comienzoPalabra = false;
         }
         i++;
     }  return contador;
 }
 
 
-//Función 7 - pasajeDiaACadena
-
+// Función 7 - pasajeDiaACadena
 void pasajeDiaACadena(int fecha, char destino[]) {
     char meses[12][11] =
         {
@@ -181,7 +184,7 @@ void pasajeDiaACadena(int fecha, char destino[]) {
     destino[i++] = '\0';
 }
 
-//Función 8 - pasajeSegundosACadena
+// Función 8 - pasajeSegundosACadena
 void pasajeSegundosACadena(float segundos, char destino[]) {
     //calculo de horas, es el numero dividido por 3600, Despues a la variable segundos se le restan las horas multiplicadas por 3600 para obtener los minutos y segundos.
     int horas = segundos / 3600;    
@@ -211,11 +214,12 @@ void nextFn() {
     cin.get();
 }
 
-//Prueba Función 1 - concatenarCadenas
+// Prueba Función 1 - concatenarCadenas
 void printFn1() {
     cout << "Prueba Función 1 - concatenarCadenas" << endl;
-    const int size = 10;
-    char cadenaDestino[20] = "Hola ";
+    
+    const int size = 9;
+    char cadenaDestino[15] = "Hola ";
     char cadenaDestino2[size] = "Hola ";
     char cadenaOrigen[] = "Mundo";
 
@@ -223,22 +227,25 @@ void printFn1() {
     cout << "Segunda cadena: " << cadenaOrigen << endl;
 
     concatenarCadenas(cadenaDestino, cadenaOrigen);
-    concatenarCadenasTruncado(cadenaDestino, size, cadenaOrigen); // Para poder saber cuando truncar, se requiere pasar el espacio alojado en la cadena de destino
+    concatenarCadenasTruncado(cadenaDestino2, size, cadenaOrigen); // Para poder saber cuando truncar, se requiere pasar el espacio alojado en la cadena de destino
     
     cout << "Concatenado: " << cadenaDestino << endl;
+    cout << "Concatenado y truncado (tamaño de cadena - 9): " << cadenaDestino2 << endl;
+
 
     nextFn();
     cout << "------------------------------------" << endl;
 }
 
-//Prueba Función 2 - compararCadenas
+// Prueba Función 2 - compararCadenas
 void printFn2() {
     cout << "Prueba Función 2 - compararCadenas" << endl;
+    
     char cadena1[20] = {};
     char cadena2[20] = {};
     cout << "Ingrese la primera cadena: ";
     cin.getline(cadena1, 20);
-    cout << "Ingrese la segunda cadena: ";
+    cout << "\nIngrese la segunda cadena: ";
     cin.getline(cadena2, 20);
     
     int resultado = compararCadenas(cadena1, cadena2);
@@ -255,9 +262,10 @@ void printFn2() {
     cout << "------------------------------------" << endl;
 }
 
-//Prueba Función 3 - copiarCadenas
+// Prueba Función 3 - copiarCadenas
 void printFn3() {
     cout << "Prueba Función 3 - copiarCadenas" << endl;
+    
     char cadenaDestino[30] = "Uruguay tiene 4 mundiales";
     char cadenaOrigen[30] = "Uruguay tiene 2 mundiales";
     //quiero que muestre la cadenaDestino y la cadenaOrigen antes de copiar, y luego que muestre la cadenaDestino después de copiar
@@ -270,9 +278,10 @@ void printFn3() {
     cout << "------------------------------------" << endl;
 }
 
-//Prueba Función 4 - largoCadena
+// Prueba Función 4 - largoCadena
 void printFn4() {
     cout << "Prueba Función 4 - largoCadena" << endl;
+    
     char cadena[20] = "Hola Mundo";
     int largo = largoCadena(cadena);
     cout << "Cadena: " << cadena << endl;
@@ -282,28 +291,33 @@ void printFn4() {
     cout << "------------------------------------" << endl;
 }
 
-//Prueba Función 5 - contarLetrasEnCadena
+// Prueba Función 5 - contarLetrasEnCadena
 void printFn5() {
     cout << "Prueba Función 5 - contarLetrasEnCadena" << endl;
-    char cadena1[]=("Hola Mundo 2026!");
-    cout<<"La cantidad de letras en cadena es:"<< contarLetrasEnCadena(cadena1)<<endl;
+    
+    char cadena[] = "Hola Mundo 2026!";
+    cout << "Cadena: " << cadena << endl;
+    cout<<"La cantidad de letras en la cadena es: "<< contarLetrasEnCadena(cadena)<<endl;
+    
     nextFn();
     cout << "------------------------------------" << endl;
 }
 
-//Prueba Función 6 - contarPalabrasEnCadena
+// Prueba Función 6 - contarPalabrasEnCadena
 void printFn6() {
     cout << "Prueba Función 6 - contarPalabrasEnCadena" << endl;
-    char cadena1[] = "Hola Mundo 2026!";
-    cout << "La cantidad de palabras en la cadena es: " << contarPalabrasEnCadena(cadena1) << endl;
+    char cadena[] = "Hola Mundo 2026!";
+    cout << "Cadena: " << cadena << endl;
+    cout << "La cantidad de palabras en la cadena es: " << contarPalabrasEnCadena(cadena) << endl;
        
     nextFn();
     cout << "------------------------------------" << endl;
 }
 
+// Prueba Función 7 - pasajeDiaACadena
 void printFn7() {
-    //Prueba Función 7 - pasajeDiaACadena
     cout << "Prueba Función 7 - pasajeDiaACadena" << endl;
+    
     char cadena[50];
     pasajeDiaACadena(20260406, cadena);
     cout << "20260406" << " => " << cadena << endl;
@@ -312,8 +326,8 @@ void printFn7() {
     cout << "------------------------------------" << endl;
 }
 
+// Prueba Función 8 - pasajeSegundosACadena
 void printFn8() {
-    //Prueba Función 8 - pasajeSegundosACadena
     cout << "Prueba Función 8 - pasajeSegundosACadena" << endl;
     char cadena[11];
     pasajeSegundosACadena(45106.97, cadena);
@@ -322,4 +336,3 @@ void printFn8() {
     nextFn();
     cout << "------------------------------------" << endl;
 }
-
