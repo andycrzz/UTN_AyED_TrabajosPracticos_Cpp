@@ -1,12 +1,20 @@
 #include <iostream>
 #include <cstring>
+
 using namespace std;
+
+
 #define CANTIDAD_CORREDORES_TOTAL 2000
 
-#define LARGO_CAMPO_NOMBRE 40
 #define LARGO_CAMPO_CATEGORIA 50
+#define LARGO_CAMPO_POSICION 16
+#define LARGO_CAMPO_ID 6
+#define LARGO_CAMPO_NOMBRE 50
+#define LARGO_CAMPO_GENERO 10
+#define LARGO_CAMPO_TIEMPOS 20
 #define LARGO_CAMPO_LOCALIDAD 40
 #define LARGO_CAMPO_LLEGADA 11
+
 
 #define NOMBRE_ARCHIVO_CORREDORES_DEFAULT "Archivo corredores 4Refugios.bin"
 #define NOMBRE_ARCHIVO_PODIOS_DEFAULT "Informe Podios 4Refugios.bin"
@@ -14,23 +22,33 @@ using namespace std;
 
 struct RegCorredores {
     int numero;
-    char nombreApellido[50];
-    char categoria[50];
+    char nombreApellido[LARGO_CAMPO_NOMBRE];
+    char categoria[LARGO_CAMPO_CATEGORIA];
     char genero;
-    char localidad[40];
-    char llegada[11];
+    char localidad[LARGO_CAMPO_LOCALIDAD];
+    char llegada[LARGO_CAMPO_LLEGADA];
 };
 
 struct RegPodio {
-    char categoria[50];
-    int posicion;
-    int numero;
-    char nombreApellido[50];
-    char genero;
-    char localidad[40];
-    char tiempo[11];
+    char categoria[LARGO_CAMPO_CATEGORIA];
+    char posicion[LARGO_CAMPO_POSICION];
+    char numero[LARGO_CAMPO_ID];
+    char nombreApellido[LARGO_CAMPO_NOMBRE];
+    char genero[LARGO_CAMPO_GENERO];
+    char localidad[LARGO_CAMPO_LOCALIDAD];
+    char tiempo[LARGO_CAMPO_LLEGADA];
 };
 
+struct HeadersPodio {
+    char categoria[LARGO_CAMPO_CATEGORIA + 1] = "";
+    char posicion[LARGO_CAMPO_POSICION + 1] = "";
+    char numero[LARGO_CAMPO_ID + 1] = "";
+
+    char nombreApellido[LARGO_CAMPO_NOMBRE] = "";
+    char genero[LARGO_CAMPO_GENERO + 1] = "";
+    char localidad[LARGO_CAMPO_LOCALIDAD] = "";
+    char tiempo[LARGO_CAMPO_TIEMPOS] = "";
+};
 
 //estas estaban en el cpp1
 int tiempoADecimas(const char[]);
@@ -38,6 +56,13 @@ void pasajeDecimasACadena(int, char[]);
 void ordenar(RegCorredores[], int);
 void sobreescribirLlegada(FILE*, RegCorredores&);
 void leerCorredores(RegCorredores[], FILE*);
+void establecerLargoCampo(char[], int, const char[]);
+void establecerLargoCampo(char[], int, const char);
+void establecerLargoCampo(char[], int, int);
+void establecerLargoCampoCentrado(char[], int, const char[]);
+void establecerLargoCampoCentrado(char[], int, const char);
+void establecerLargoCampoCentrado(char[], int, int);
+void establecerLargoHeaders(HeadersPodio&);
 
 // Devuelve cuántas categorías diferentes existen.
 int obtenerCantidadCategorias(RegCorredores[], int);
@@ -54,11 +79,9 @@ void ordenarCategorias(char[][LARGO_CAMPO_CATEGORIA], int);
 // Genera el archivo final con el podio de todas las categorías.
 void generarPodios(FILE*, RegCorredores[], int, char[][LARGO_CAMPO_CATEGORIA], int);
 
-
 int main() {
     RegCorredores corredores[CANTIDAD_CORREDORES_TOTAL] = {};
 
-//FALTA HACER LO QUE PIDE LA CONSIGNA PARA LOS ARCHIVOS PQ NI IDEA SI ESTO ESTA BIEN HECHO------------------------------------------
     char carpetaRuta[] = "./";
     char nombreDelArchivo[] = NOMBRE_ARCHIVO_CORREDORES_DEFAULT;
     char ruta[300];
@@ -80,27 +103,21 @@ int main() {
         cantidadCorredores++;
     }
     fclose(fCorredores);
-//-----------------------------------------------------------------------------------
     
     //ordenamos los corredores 
     ordenar(corredores, cantidadCorredores);
 
-
     //cuantas categorias existen
     int cantidadCategorias = obtenerCantidadCategorias(corredores, cantidadCorredores);
-    cout << "Cantidad de categorias diferentes:" << cantidadCategorias << endl;
 
     //matriz para guardar todas las categorias diferentes
     char categorias[CANTIDAD_CORREDORES_TOTAL][LARGO_CAMPO_CATEGORIA];
 
     obtenerCategorias(corredores, cantidadCorredores, categorias, cantidadCategorias);
 
-
     //ordenamos las categorias
     ordenarCategorias(categorias, cantidadCategorias);
 
-
-//MISMO PROBLEMA QUE CUANDO ABRI LOS ARCHIVOS-----------------------
     char nombreArchivoPodios[] = NOMBRE_ARCHIVO_PODIOS_DEFAULT;
     char rutaPodios[100];
     strcpy(rutaPodios, carpetaRuta);
@@ -113,17 +130,12 @@ int main() {
         cout << "Ruta detectada: " << rutaPodios << endl;
         return 1;
     }
-//---------------------------------------------
 
     //Genera los podios 
     generarPodios(fPodios, corredores , cantidadCorredores , categorias , cantidadCategorias);
-
-    //FALTA LO QUE SIGUE
-
+    cout << "Informe generado." << endl;
     fclose(fPodios);
 }
-
-
 
 // Convierte "HH:MM:SS.D" a decimas. Si es "No Termino" devuelve -1.
 int tiempoADecimas(const char llegada[]) {
@@ -204,10 +216,130 @@ void leerCorredores(RegCorredores corredores[], FILE* file) {
     };
 }
 
-//FUNCIONES NUEVAS
+void establecerLargoHeaders(HeadersPodio& headers) {
+    establecerLargoCampoCentrado(headers.categoria, LARGO_CAMPO_CATEGORIA + 1, "Categoría");
+    establecerLargoCampoCentrado(headers.posicion, LARGO_CAMPO_POSICION + 1, "Posición");
+    establecerLargoCampoCentrado(headers.numero, LARGO_CAMPO_ID + 1, "N°"); // "°" ocupa 2 bytes
+    establecerLargoCampoCentrado(headers.nombreApellido, LARGO_CAMPO_NOMBRE, "Nombre");
+    establecerLargoCampoCentrado(headers.genero, LARGO_CAMPO_GENERO + 1, "Género");
+    establecerLargoCampoCentrado(headers.localidad, LARGO_CAMPO_LOCALIDAD, "Localidad");
+    establecerLargoCampoCentrado(headers.tiempo, LARGO_CAMPO_TIEMPOS, "Tiempo");
+}
+
+void establecerLargoCampo(char dest[], int destBuf, const char src[]) {
+    strcpy(dest, src);
+    
+    for (int i = strlen(src); i < destBuf - 1; i++) {
+        dest[i] = ' ';
+    }
+    dest[destBuf - 1] = '\0';
+}
+
+void establecerLargoCampo(char dest[], int destBuf, const char src) {
+    dest[0] = src;
+
+    for (int i = 1; i < destBuf - 1; i++) {
+        dest[i] = ' ';
+    }
+    dest[destBuf - 1] = '\0';
+}
+
+void establecerLargoCampo(char dest[], int destBuf, int src) {
+    snprintf(dest, destBuf, "%d", src); // easy int to char[] conversion
+    
+    for (int i = strlen(dest); i < destBuf - 1; i++) {
+        dest[i] = ' ';
+    }
+    dest[destBuf - 1] = '\0';
+}
+
+void establecerLargoCampoCentrado(char dest[], int destBuf, const char src[]) {
+    int srcLen = strlen(src);
+    int availableSpace = destBuf - 1;
+
+    if (srcLen >= availableSpace) {
+        strncpy(dest, src, availableSpace);
+        dest[availableSpace] = '\0';
+        return;
+    }
+    
+    int spacesToInsert = availableSpace - srcLen;
+    int paddingLeft = spacesToInsert / 2;
+    int paddingRight = spacesToInsert - paddingLeft; // No siempre seran ambos lados simétricos
+
+    int idx = 0;
+    for (int i = 0; i < paddingLeft; i++) {
+        dest[idx++] = ' ';
+    }
+
+    
+    for (int i = 0; i < srcLen; i++) {
+        dest[idx++] = src[i];
+    }
+
+    for (int i = 0; i < paddingRight; i++) {
+        dest[idx++] = ' ';
+    }
+
+    dest[availableSpace] = '\0';
+}
+
+void establecerLargoCampoCentrado(char dest[], int destBuf, const char src) {
+    int availableSpace = destBuf - 1;
+    
+    int spacesToInsert = availableSpace - 1;
+    int paddingLeft = spacesToInsert / 2;
+    int paddingRight = spacesToInsert - paddingLeft; // No siempre seran ambos lados simétricos
+
+    int idx = 0;
+    for (int i = 0; i < paddingLeft; i++) {
+        dest[idx++] = ' ';
+    }
+
+    dest[idx++] = src;
+
+    for (int i = 0; i < paddingRight; i++) {
+        dest[idx++] = ' ';
+    }
+
+    dest[availableSpace] = '\0';
+}
+
+void establecerLargoCampoCentrado(char dest[], int destBuf, int src) {
+    char aux[6] = "";
+    snprintf(aux, destBuf, "%d", src);
+    int srcLen = strlen(aux);
+
+    int availableSpace = destBuf - 1;
+
+    if (srcLen >= availableSpace) {
+        strcpy(dest, aux);
+        dest[availableSpace] = '\0';
+        return;
+    }
+    
+    int spacesToInsert = availableSpace - srcLen;
+    int paddingLeft = spacesToInsert / 2;
+    int paddingRight = spacesToInsert - paddingLeft; // No siempre seran ambos lados simétricos
+    
+    int idx = 0;
+    for (int i = 0; i < paddingLeft; i++) {
+        dest[idx++] = ' ';
+    }
+    
+    for (int i = 0; i < srcLen; i++) {
+        dest[idx++] = aux[i];
+    }
+
+    for (int i = 0; i < paddingRight; i++) {
+        dest[idx++] = ' ';
+    }
+
+    dest[availableSpace] = '\0';
+}
 
 //crea la matriz con todas las categorias diferentes y devuelve el numero de categorias diferentes 
-int obtenerCantidadCategorias(RegCorredores corredores[],int cantidadCorredores) {
+int obtenerCantidadCategorias(RegCorredores corredores[], int cantidadCorredores) {
     int cantidadCategorias = 0;
     char categoriasVistas[CANTIDAD_CORREDORES_TOTAL][LARGO_CAMPO_CATEGORIA];
 
@@ -216,6 +348,7 @@ int obtenerCantidadCategorias(RegCorredores corredores[],int cantidadCorredores)
         for (int j = 0; j < cantidadCategorias; j++) {
             if (strcmp(corredores[i].categoria,categoriasVistas[j]) == 0) { categoriaYaExiste = true; break; }
         }
+        
         if (categoriaYaExiste == false) {
             strcpy(categoriasVistas[cantidadCategorias],corredores[i].categoria);
             cantidadCategorias++;
@@ -231,8 +364,8 @@ void obtenerCategorias(RegCorredores corredores[], int cantidadCorredores, char 
         for (int j = 0; j < cantidadGuardadas; j++) {
             if (strcmp(corredores[i].categoria, categorias[j]) == 0) { categoriaYaExiste = true; break;}
         }
-        if (categoriaYaExiste == 0) {
 
+        if (!categoriaYaExiste && !strstr(corredores[i].categoria, "No Termino")) {
             strcpy(categorias[cantidadGuardadas], corredores[i].categoria);
             cantidadGuardadas++;
         }
@@ -258,7 +391,6 @@ void obtenerPodioCategoria(RegCorredores corredores[], int cantidadCorredores, c
     int cantidadPodio = 0;
     for (int i = 0; i < 3; i++) {podio[i].numero = -1;} //-1 si no se llenó el podio
     for (int i = 0; i < cantidadCorredores && cantidadPodio < 3; i++) {
-
         if (strcmp(corredores[i].categoria,categoria) == 0) {
             if (tiempoADecimas(corredores[i].llegada) != -1) {
                 podio[cantidadPodio] = corredores[i];
@@ -268,18 +400,62 @@ void obtenerPodioCategoria(RegCorredores corredores[], int cantidadCorredores, c
     }
 }
 
-void generarPodios(FILE* file, RegCorredores corredores[],int cantidadCorredores, char categorias[][LARGO_CAMPO_CATEGORIA], int cantidadCategorias) {
-    for (int i = 0;i < cantidadCategorias; i++) {
+RegPodio generarRegistroPodio(
+    RegCorredores corredor, 
+    int posicion
+) {
+    RegPodio reg;
+
+    establecerLargoCampo(reg.categoria, LARGO_CAMPO_CATEGORIA, corredor.categoria);
+    establecerLargoCampoCentrado(reg.posicion, LARGO_CAMPO_POSICION, posicion);
+    establecerLargoCampo(reg.numero, LARGO_CAMPO_ID, corredor.numero);
+    establecerLargoCampo(reg.nombreApellido, LARGO_CAMPO_NOMBRE, corredor.nombreApellido);
+    establecerLargoCampoCentrado(reg.genero, LARGO_CAMPO_GENERO, corredor.genero);
+    establecerLargoCampo(reg.localidad, LARGO_CAMPO_LOCALIDAD, corredor.localidad);
+    establecerLargoCampoCentrado(reg.tiempo, LARGO_CAMPO_TIEMPOS, corredor.llegada);
+
+    return reg;
+}
+
+void generarPodios(FILE* file, RegCorredores corredores[], int cantidadCorredores, char categorias[][LARGO_CAMPO_CATEGORIA], int cantidadCategorias) {
+    HeadersPodio headers;
+    establecerLargoHeaders(headers);
+
+    cout << headers.categoria
+         << headers.posicion
+         << headers.numero
+         << headers.nombreApellido
+         << headers.genero
+         << headers.localidad
+         << headers.tiempo
+         << endl;
+
+    fwrite(&headers, sizeof(HeadersPodio), 1, file);
+    
+    for (int i = 0; i < cantidadCategorias; i++) {
         RegCorredores podio[3];
         obtenerPodioCategoria(corredores, cantidadCorredores, categorias[i], podio);
-        cout << "Categoria: " << categorias[i] << endl;
+
         for (int j = 0; j < 3; j++) {
-            if (podio[j].numero != -1) {
-                cout << "Posicion: " << j + 1 << endl;
-                cout << "Numero: " << podio[j].numero << endl;
-                cout << "Nombre: "<< podio[j].nombreApellido << endl;
-                cout << "Tiempo: " << podio[j].llegada << endl;
-               // FALTA HACER LO QUE SEA GUARDAR EN EL ARCHIVO 
+            if (podio[j].numero == -1) continue;
+            
+            RegPodio reg = generarRegistroPodio(
+                podio[j],
+                j + 1
+            );
+
+            cout << reg.categoria
+                 << reg.posicion
+                 << reg.numero
+                 << reg.nombreApellido
+                 << reg.genero
+                 << reg.localidad
+                 << reg.tiempo
+                 << endl;
+
+            fwrite(&reg, sizeof(RegPodio), 1, file);
         }
+
+        cout << "\n\n";
     }
 }

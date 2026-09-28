@@ -77,10 +77,8 @@ void establecerLargoHeaders(HeadersInforme&);
 void generarInforme(FILE*, RegCorredores[], int);
 RegInforme generarRegistroInforme(RegCorredores, const char[], const char[], const char[], const char[], const char[], const char[]);
 void leerCorredores(RegCorredores[], FILE*);
-void loadData(char[], int, char[], int, char[], int);
 void ordenar(RegCorredores[], int);
 void pasajeDecimasACadena(int, char[]);
-void setIfEmpty(char[], const char[]);
 void sobreescribirLlegada(FILE*, RegCorredores&);
 int tiempoADecimas(const char[]);
 
@@ -361,6 +359,8 @@ void establecerLargoCampoCentrado(char dest[], int destBuf, const char src[]) {
 
     if (srcLen >= availableSpace) {
         strcpy(dest, src);
+        dest[availableSpace] = '\0';
+        return;
     }
     
     int spacesToInsert = availableSpace - srcLen;
@@ -414,6 +414,8 @@ void establecerLargoCampoCentrado(char dest[], int destBuf, int src) {
 
     if (srcLen >= availableSpace) {
         strcpy(dest, aux);
+        dest[availableSpace] = '\0';
+        return;
     }
     
     int spacesToInsert = availableSpace - srcLen;
