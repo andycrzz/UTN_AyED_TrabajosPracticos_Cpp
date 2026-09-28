@@ -66,6 +66,11 @@ int main() {
     strcat(ruta, nombreDelArchivo);
     
     FILE* fCorredores = fopen(ruta, "rb+");
+    if (!fCorredores) {
+        cout << "Hubo un error al intentar abrir el archivo. Revise que la ruta sea correcta.\n";
+        cout << "Ruta detectada: " << ruta << endl;
+        return 1;
+    }
     
     int cantidadCorredores = 0;
     RegCorredores reg;
@@ -103,6 +108,11 @@ int main() {
 
 
     FILE* fPodios = fopen(rutaPodios, "wb");
+    if (!fPodios) {
+        cout << "Hubo un error al intentar crear el archivo. Revise que la ruta sea correcta.\n";
+        cout << "Ruta detectada: " << rutaPodios << endl;
+        return 1;
+    }
 //---------------------------------------------
 
     //Genera los podios 
@@ -110,7 +120,7 @@ int main() {
 
     //FALTA LO QUE SIGUE
 
-
+    fclose(fPodios);
 }
 
 

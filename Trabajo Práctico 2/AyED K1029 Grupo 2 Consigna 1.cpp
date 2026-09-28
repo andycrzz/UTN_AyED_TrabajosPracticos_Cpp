@@ -3,6 +3,7 @@
 
 #define CANTIDAD_CORREDORES_TOTAL 2000
 #define CANTIDAD_CORREDORES_CARRERA 1000
+
 #define LARGO_CAMPO_POSICIONES 16
 #define LARGO_CAMPO_ID 6
 #define LARGO_CAMPO_GENERO 10
@@ -12,9 +13,9 @@
 #define LARGO_CAMPO_TIEMPOS 20
 
 
-#define NOMBRE_ARCHIVO_CORREDORES_DEFAULT "Archivo corredores 4Refugios"
-#define NOMBRE_INFORME_CLASICA_DEFAULT "Informe Carrera Clásica"
-#define NOMBRE_INFORME_NONSTOP_DEFAULT "Informe Carrera NonStop"
+#define NOMBRE_ARCHIVO_CORREDORES_DEFAULT "Archivo corredores 4Refugios.bin"
+#define NOMBRE_INFORME_CLASICA_DEFAULT "Informe Carrera Clásica.bin"
+#define NOMBRE_INFORME_NONSTOP_DEFAULT "Informe Carrera NonStop.bin"
 
 using namespace std;
 
@@ -93,10 +94,17 @@ int main() {
     char ruta[300] = "";
 
     // 1. Archivo corredores (lectura + escritura por el reemplazo)
-    strcpy(nombreDelArchivo, "Archivo corredores 4Refugios.bin");
+    strcpy(nombreDelArchivo, NOMBRE_ARCHIVO_CORREDORES_DEFAULT);
     strcpy(ruta, carpetaRuta);
     strcat(ruta, nombreDelArchivo);
+
     FILE* fCorredores = fopen(ruta, "rb+");
+    if (!fCorredores) {
+        cout << "Hubo un error al intentar abrir el archivo. Revise que la ruta sea correcta.\n";
+        cout << "Ruta detectada: " << ruta << endl;
+        return 1;
+    }
+
     leerCorredores(corredores, fCorredores);
     fclose(fCorredores);
 
@@ -114,19 +122,37 @@ int main() {
     ordenar(nonstop, nN);
     
     // 2. Informe Clásica
-    strcpy(nombreDelArchivo, "Informe Carrera Clásica.bin");
+    strcpy(nombreDelArchivo, NOMBRE_INFORME_CLASICA_DEFAULT);
     strcpy(ruta, carpetaRuta);
     strcat(ruta, nombreDelArchivo);
+    
     FILE* fListadoClasica = fopen(ruta, "wb");
+    if (!fListadoClasica) {
+        cout << "Hubo un error al intentar crear el archivo. Revise que la ruta sea correcta.\n";
+        cout << "Ruta detectada: " << ruta << endl;
+        return 1;
+    }
+
+    cout << "--- Informe carrera Clásica ---" << endl;
     generarInforme(fListadoClasica, clasica, nC);
+    cout << "Informe generado." << endl;
     fclose(fListadoClasica);
     
     // 3. Informe NonStop
-    strcpy(nombreDelArchivo, "Informe Carrera NonStop.bin");
+    strcpy(nombreDelArchivo, NOMBRE_INFORME_NONSTOP_DEFAULT);
     strcpy(ruta, carpetaRuta);
     strcat(ruta, nombreDelArchivo);
+    
     FILE* fListadoNonStop = fopen(ruta, "wb");
+    if (!fListadoNonStop) {
+        cout << "Hubo un error al intentar crear el informe. Revise que la ruta sea correcta.\n";
+        cout << "Ruta detectada: " << ruta << endl;
+        return 1;
+    }
+    
+    cout << "--- Informe carrera NonStop ---" << endl;
     generarInforme(fListadoNonStop, nonstop, nN);
+    cout << "Informe generado." << endl;
     fclose(fListadoNonStop);
 
     return 0;
@@ -172,7 +198,9 @@ void ordenar(RegCorredores v[], int n) {
 
 void generarInforme(FILE* file, RegCorredores v[], int n) {
     HeadersInforme headers;
+    
     establecerLargoHeaders(headers);
+    
     fwrite(&headers, sizeof(HeadersInforme), 1, file);
     
     cout << headers.posGral 
