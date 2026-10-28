@@ -5,7 +5,7 @@ Funciones próximas a implementar:
 
 #include <iostream>
 #include <cstring>
-#include <cstdio>
+
 using namespace std;
 
 struct RegistroArchivo{
@@ -33,7 +33,7 @@ struct Materia {
 // --- FUNCIONES AUXILIARES DE LISTAS ---
 
 // Busca una materia en la lista principal. Si no existe, la crea y la inserta al final.
-Materia* buscarOInsertarMateria(Materia* &lista, int codigo, const char* nombre) {
+Materia* buscarOInsertarMateria(Materia* &lista, int codigo, const char* nombre = "") {
     Materia* aux = lista;
     Materia* ant = NULL;
     while (aux != NULL && aux->codigo != codigo) {
@@ -139,18 +139,76 @@ void mostrarMaterias(Materia* lista) {
     }
 }
 
+Materia* mostrarMenu(Materia* lista) {
+    int id = 1;
+    int opt = 0;
+    
+    Materia* nodoActual = lista;
+    cout << "\n== Menú ==\n";
+    while (nodoActual) {
+        cout << "[" << nodoActual->codigo << "] " << nodoActual->nombre << " - Código " << nodoActual->codigo << endl;
+        nodoActual = nodoActual->sig;
+
+        id++;
+    }
+
+    cout << "Seleccione una materia [1-" << id - 1 << "]: ";
+    cin >> opt;
+    
+    while (opt <= 0 || opt > id) {
+        cout << "Opción inválida." << endl;
+        cout << endl << "Seleccione una materia [1-" << id - 1 << "]: ";
+        cin >> opt;
+    }
+
+    return buscarOInsertarMateria(lista, opt);
+}
+
+void mostrarCorrelativasPorMateria(Materia* materia, Materia* listaMaterias) {
+    NodoCorrelativa* correlativas = materia->correlativas;
+    
+    
+    NodoCorrelativa* nodoActual = correlativas;
+    cout << "\n\n";
+    if (!nodoActual) {
+        cout << "La materia " << materia->nombre << " no tiene correlativas." << endl;
+        return;
+    }
+    
+    cout << "Correlativas para la materia " << materia->nombre << ":\n";
+
+    while (nodoActual) {
+        Materia* materiaRelacionada = buscarOInsertarMateria(listaMaterias, nodoActual->codMateria);
+        
+        cout << "- " << materiaRelacionada->nombre << " (Código " << materiaRelacionada->codigo << "): ";
+        cout << "Cursada requerida: " << (nodoActual->cursadaAprobada ? "Si" : "No");
+        cout << " | Final requerido: " << (nodoActual->finalAprobado ? "Si" : "No") << endl;
+        nodoActual = nodoActual->sig;
+    }
+}
+
 int main() {
+    char exit[5] = "";
+
     Materia* planDeEstudios = importarMaterias("materia_correlativas.bin");
     if (planDeEstudios == NULL) {
         cout << "Error: No se pudo cargar el plan de estudios. Revisa el archivo .bin" << endl;
         return 1; 
     }
-    cout << "=== PLAN DE ESTUDIOS CARGADO EXITOSAMENTE ===" << endl;
+
+    cout << "=== PLAN DE ESTUDIOS CARGADO EXITOSAMENTE ==="<< endl;
     mostrarMaterias(planDeEstudios);
+    do {
+        Materia* materiaSeleccionada = mostrarMenu(planDeEstudios);
+        mostrarCorrelativasPorMateria(materiaSeleccionada, planDeEstudios);
+        
+        cout << "\n¿Quiere revisar otra materia (S/n)? ";
+        cin >> exit;
+    } while (exit[0] == 's' || exit[0] == 'S');
 
     // NOTA: Aca hay que llamar a la función de limpieza de memoria (los delete) antes de cerrar el programa.
-
-    cout << "\nPresione ENTER para salir...";
+    
+    cout << "\nPresione cualquier tecla para salir...";
     cin.ignore(); 
     cin.get();    
     return 0;
